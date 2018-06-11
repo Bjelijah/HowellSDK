@@ -1,0 +1,79 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+group = 'com.github.Bjelijah'
+android {
+    compileSdkVersion 26
+    buildToolsVersion '27.0.3'
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        ndk{
+            abiFilters 'armeabi-v7a'
+           // abiFilters 'armeabi','armeabi-v7a'//ndk 16 deprecated armeabi
+//            ldLibs "log" ,"GLESv2" ,"z" ,"dl","gcc"
+        }
+//        externalNativeBuild{
+//            ndkBuild{
+//                arguments "NDK_APPLICATION_MK:=src/main/jni/Application.mk"
+//                cFlags "-DTEST_C_FLAG1", "-DTEST_C_FLAG2"
+//                cppFlags "-DTEST_CPP_FLAG2", "-DTEST_CPP_FLAG2"
+//                abiFilters "armeabi-v7a", "armeabi"
+//            }
+//        }
+    }
+
+    externalNativeBuild{
+        ndkBuild{
+            path 'src/main/jni/Android.mk'
+        }
+    }
+
+    sourceSets{
+        main{
+            jniLibs.srcDirs=['libs']
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        repositories {
+            maven { url 'https://oss.sonatype.org/content/repositories/ksoap2-android-releases' }//soap
+        }
+    }
+    packagingOptions{
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/ASL2.0'
+
+        pickFirst 'lib/armeabi-v7a/libplayer_jni.so'
+        pickFirst 'lib/armeabi-v7a/libhwtrans.so'
+        pickFirst 'lib/armeabi-v7a/libhwplay.so'
+    }
+    useLibrary 'org.apache.http.legacy'
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+    implementation 'com.android.support:appcompat-v7:26.+'
+    testImplementation 'junit:junit:4.12'
+    implementation'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.2.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.2.0'
+    implementation 'org.ligboy.retrofit2:converter-fastjson-android:2.1.0'
+    implementation 'org.codehaus.jackson:jackson-mapper-asl:1.9.7'//isoDate
+    implementation 'com.google.code.ksoap2-android:ksoap2-android:3.6.2'
+}
