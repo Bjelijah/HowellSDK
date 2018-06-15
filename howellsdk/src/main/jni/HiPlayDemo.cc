@@ -845,20 +845,23 @@ static void on_yuv_callback(PLAY_HANDLE handle,
 
 
 
-static void on_source_callback(PLAY_HANDLE handle, int type, const char* buf, int len, unsigned long timestamp, long sys_tm, int w, int h, int framerate, int au_sample, int au_channel, int au_bits, long user){
+static void on_source_callback(PLAY_HANDLE handle, int type, const char* buf, int len, unsigned long timestamp, long sys_tm, int w, int h, int framerate, int au_sample, int au_channel, int au_bits, long user) {
 
 //    LOGE("on source_callback       type=%d  len=%d  w=%d  h=%d  timestamp=%ld sys_tm=%ld  framerate=%d  au_sample=%d  au_channel=%d au_bits=%d",type,len,w,h,timestamp,sys_tm,framerate,au_sample,au_channel,au_bits);
 //    int ret = hwplay_is_pause(handle);
 //    LOGE("on source callback is pause=%d\n",ret);
 
-    if (res!=NULL){
-        if (res->is_exit){
+    if (res != NULL) {
+        if (res->is_exit) {
             LOGE("on source callback is  exit return");
             return;
         }
     }
 
-//    res->stream_len += len;
+    if (user == 2) {//local
+        res->stream_len += len;
+        user=0;
+    }
     if (res!=NULL){
         if (res->isFirstTime){
             res->isFirstTime = 0;
@@ -1311,7 +1314,7 @@ JNIEXPORT jboolean JNICALL Java_com_howell_jni_JniUtil_localReadyPlay
     hwplay_set_max_framenum_in_buf(ph,12);
     LOGI("open local file ph=%d",ph);
     hwplay_open_sound(ph);
-    hwplay_register_source_data_callback(ph,on_source_callback,0);//user data==0
+    hwplay_register_source_data_callback(ph,on_source_callback,2);//user data==2
     hwplay_register_yuv_callback_ex(ph,on_yuv_callback,0);
     res->play_handle = ph;
     env->ReleaseStringUTFChars(path,_path);
