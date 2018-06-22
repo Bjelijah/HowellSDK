@@ -17,6 +17,9 @@ import com.howell.sdk.netsdk.R;
 //GLTextureView
 public class ZoomableTextureView extends GLESTextureView {
 
+    public interface OnTouchCb{
+        void onTouchCb(View view,MotionEvent motionEvent);
+    }
     private static final String SUPERSTATE_KEY = "superState";
     private static final String MIN_SCALE_KEY = "minScale";
     private static final String MAX_SCALE_KEY = "maxScale";
@@ -26,6 +29,11 @@ public class ZoomableTextureView extends GLESTextureView {
     private float minScale = 1f;
     private float maxScale = 5f;
     private float saveScale = 1f;
+    OnTouchCb mCb;
+
+    public void setOnTouchCallback(OnTouchCb cb){
+        mCb = cb;
+    }
 
     public void setMinScale(float scale) {
         if (scale < 1.0f || scale > maxScale)
@@ -126,6 +134,9 @@ public class ZoomableTextureView extends GLESTextureView {
                     mode = DRAG;
                     break;
                 case MotionEvent.ACTION_UP:
+                    if (mCb!=null && mode != ZOOM){
+                        mCb.onTouchCb(view,motionEvent);
+                    }
                     mode = NONE;
                     break;
                 case MotionEvent.ACTION_POINTER_DOWN:
