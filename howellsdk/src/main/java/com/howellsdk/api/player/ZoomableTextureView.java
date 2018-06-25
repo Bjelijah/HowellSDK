@@ -18,7 +18,7 @@ import com.howell.sdk.netsdk.R;
 public class ZoomableTextureView extends GLESTextureView {
 
     public interface OnTouchCb{
-        void onTouchCb(View view,MotionEvent motionEvent);
+        boolean onTouchCb(View view,MotionEvent motionEvent);
     }
     private static final String SUPERSTATE_KEY = "superState";
     private static final String MIN_SCALE_KEY = "minScale";
@@ -119,7 +119,7 @@ public class ZoomableTextureView extends GLESTextureView {
 
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
-
+            boolean ret = true;
             mScaleDetector.onTouchEvent(motionEvent);
 
             matrix.getValues(m);
@@ -135,7 +135,7 @@ public class ZoomableTextureView extends GLESTextureView {
                     break;
                 case MotionEvent.ACTION_UP:
                     if (mCb!=null && mode != ZOOM){
-                        mCb.onTouchCb(view,motionEvent);
+                        ret = mCb.onTouchCb(view,motionEvent);
                     }
                     mode = NONE;
                     break;
@@ -167,7 +167,7 @@ public class ZoomableTextureView extends GLESTextureView {
             }
             ZoomableTextureView.this.setTransform(matrix);
             ZoomableTextureView.this.invalidate();
-            return true;
+            return ret;
         }
 
         private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
