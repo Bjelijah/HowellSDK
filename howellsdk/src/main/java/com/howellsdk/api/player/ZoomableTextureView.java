@@ -119,7 +119,7 @@ public class ZoomableTextureView extends GLESTextureView {
 
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
-            boolean ret = true;
+
             mScaleDetector.onTouchEvent(motionEvent);
 
             matrix.getValues(m);
@@ -134,10 +134,10 @@ public class ZoomableTextureView extends GLESTextureView {
                     mode = DRAG;
                     break;
                 case MotionEvent.ACTION_UP:
-                    if (mCb!=null && mode != ZOOM){
-                        ret = mCb.onTouchCb(view,motionEvent);
-                    }
                     mode = NONE;
+                    if (mCb!=null && mode != ZOOM){
+                        return mCb.onTouchCb(view,motionEvent);
+                    }
                     break;
                 case MotionEvent.ACTION_POINTER_DOWN:
                     last.set(motionEvent.getX(), motionEvent.getY());
@@ -167,7 +167,7 @@ public class ZoomableTextureView extends GLESTextureView {
             }
             ZoomableTextureView.this.setTransform(matrix);
             ZoomableTextureView.this.invalidate();
-            return ret;
+            return true;
         }
 
         private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
