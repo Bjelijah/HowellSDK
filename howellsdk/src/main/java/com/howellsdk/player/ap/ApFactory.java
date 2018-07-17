@@ -89,6 +89,12 @@ public class ApFactory {
         }
 
         @Override
+        public void setUri(String uri) {
+            super.setUri(uri);
+            ip = uri;
+        }
+
+        @Override
         public boolean connect() {
             Log.i("123","login ip="+ip);
             return JniUtil.login(ip);
