@@ -33,8 +33,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Administrator on 2017/8/9.
+ * api对外接口
  */
-
 public class ApiManager {
     private static volatile ApiManager mInstance;
     public static ApiManager getInstance(){
@@ -56,11 +56,23 @@ public class ApiManager {
     private HWPlayApi mHWTurnApi,mHWEcamApi,mHWApcamApi,mLocalApi;
     private HWDownloadApi mDownloadApi;
 
+    /**
+     * api  jni部分打印数据启用
+     * @param enable true打印 ；false不打印
+     * @return ApiManager当前api管理
+     */
     public  ApiManager setJNILogEnable(boolean enable) {
         JniUtil.logEnable(enable);
         return this;
     }
 
+    /**
+     * http协议初始化
+     * http协议多使用在howell平台管理中，如：人脸，车辆，报警，定位，等等功能
+     * @param context 上下文
+     * @param isSSL 是否使用ssl加密
+     * @return ApiManager当前api管理
+     */
     public ApiManager initHttpClient(Context context, boolean isSSL){
         if (mClient==null){
             try {
@@ -86,6 +98,13 @@ public class ApiManager {
         return this;
     }
 
+    /**
+     * soap协议初始化
+     * soap协议仅在ecam中使用
+     * @param context
+     * @param isSSL
+     * @return ApiManager当前api管理
+     */
     public ApiManager initSoapClient(Context context, boolean isSSL){
         if (isSSL) try {
             SSLConection.allowSSL(context);
@@ -105,7 +124,11 @@ public class ApiManager {
         return this;
     }
 
-
+    /**
+     * 获取http服务api
+     * @param url 要连接的http服务器的url
+     * @return httpApi
+     */
     public HWHttpApi getHWHttpService(String url){
         if (mHWHttpApi==null){
             Retrofit retrofit = new Retrofit.Builder()
@@ -126,7 +149,11 @@ public class ApiManager {
     }
 
 
-
+    /**
+     * 获取Soap服务api
+     * @param url soap服务器 url
+     * @return soap api
+     */
     public HWSoapApi getSoapService(String url){
         SoapFactory factory = null;
         try {
@@ -156,11 +183,21 @@ public class ApiManager {
         return mHWSoapApi;
     }
 
+    /**
+     * 重置soap服务 便于下次获取新的
+     * @return
+     */
     public ApiManager resetSoapService(){
         mHWSoapApi = null;
         return this;
     }
 
+    /**
+     * 获取websocket api
+     * @param url websocket url
+     * @param cb 回调 {@link HWWebSocketApi.IWebSocketCB}
+     * @return websocket api
+     */
     public HWWebSocketApi getWebSocketService(String url,HWWebSocketApi.IWebSocketCB cb){
         if (mHWWebSocketApi==null){
             mHWWebSocketApi = new WebSocketFactory.Builder()
@@ -181,12 +218,30 @@ public class ApiManager {
         return this;
     }
 
-
+    /**
+     * 获取流转播放 api
+     * @return 流转播放 api
+     */
     public HWPlayApi getTurnService(){
         if (mHWTurnApi==null){Log.e("123","mHWTurnApi==null throw exception");throw new NullPointerException("api=null");}
         return mHWTurnApi;
     }
 
+    /**
+     * 获取流转播放 api
+     * @param c 上下文
+     * @param ip 流转服务器ip
+     * @param port 流转服务器端口
+     * @param deviceId 设备id
+     * @param channel 设备通道号
+     * @param isSub 是否是次码流
+     * @param name 用户名
+     * @param pwd 密码
+     * @param ssl 是否ssl
+     * @param imei 手机唯一码
+     * @param cb 回调 {@link HWPlayApi.ITurnCB}
+     * @return 流转服务api
+     */
     public HWPlayApi getTurnService(Context c, String ip, int port
             ,String deviceId,int channel,boolean isSub
             , String name, String pwd, boolean ssl, String imei, HWPlayApi.ITurnCB cb){
@@ -213,7 +268,15 @@ public class ApiManager {
         return this;
     }
 
-
+    /**
+     * 获取ecam播放 api
+     * @param name 用户名
+     * @param ip 服务器ip
+     * @param port 服务器端口号
+     * @param method 连接方式 0：udp+ice  2：ice
+     * @param cb 回调 {@link HWPlayApi.IEcamCB}
+     * @return ecam播放api
+     */
     public HWPlayApi getEcamService(String name, String ip, int port, int method,HWPlayApi.IEcamCB cb){
 //        if (mHWEcamApi==null){
         mHWEcamApi = new EcamFactory.Builder()
@@ -236,12 +299,23 @@ public class ApiManager {
         return this;
     }
 
-
+    /**
+     * 获取 ap5198直连 播放 api
+     * @return ap 播放api
+     */
     public HWPlayApi getAPcamService(){
         if (mHWApcamApi==null)throw new NullPointerException("api=null");
         return mHWApcamApi;
     }
 
+    /**
+     * 获取 ap5198直连 播放 api
+     * @param ip ip地址
+     * @param slot 通道号
+     * @param crypto 是否加密
+     * @param cb 回调 {@link HWPlayApi.IAPCamCB}
+     * @return ap 播放api
+     */
     public HWPlayApi getAPcamService(String ip,int slot,int crypto,HWPlayApi.IAPCamCB cb){
 //        if (mHWApcamApi==null){
         mHWApcamApi = new ApFactory.Builder()
@@ -271,6 +345,11 @@ public class ApiManager {
         return this;
     }
 
+    /**
+     * 获取5198下载服务 api
+     * @param type 类型 0 hw流  1 h264流
+     * @return download api
+     */
     public HWDownloadApi getApDownLoadServer(int type){
        if (mDownloadApi==null){
            mDownloadApi = new ApDownloadFactory
@@ -287,6 +366,12 @@ public class ApiManager {
         return mDownloadApi;
     }
 
+    /**
+     * 获取本地播放api
+     * @param crypto 是否加密
+     * @param path 本地播放路径
+     * @return 本地播放api
+     */
     public HWPlayApi getLocalService(int crypto,String path){
         if(mLocalApi==null){
             mLocalApi = new LocalFactory.Builder()
@@ -301,7 +386,9 @@ public class ApiManager {
     }
 
 
-
+    /**
+     * 事件
+     */
     public enum EventType{
         NONE("None"),
         IO("IO"),
@@ -378,6 +465,10 @@ public class ApiManager {
         EventType(String s){this.s=s;}
         public String getVal(){return this.s;}
     }
+
+    /**
+     * http帮助类
+     */
     public static class HttpHelp{
         static String sCookieHalf;
         static String sVerify;
@@ -445,6 +536,10 @@ public class ApiManager {
             PDC_EVENTS_RECORDS,
             PDC_USERS
         }
+
+        /**
+         * 设备类型
+         */
         public enum DeviceClassification{
             NONE("None"),
             IP_CAMERA("IPCamera"),
@@ -481,12 +576,27 @@ public class ApiManager {
             }
         }
 
-
+        /**
+         * http设置cookie
+         * @param userName 用户名
+         * @param domain 域
+         * @param loginSession login后获取到的session
+         * @param verifySession 计算后的session
+         */
         public static void setCookie(String userName,String domain,String loginSession,String verifySession){
             sCookieHalf = "username="+userName+";sid="+loginSession+";domain="+domain+";";
             sVerify = verifySession;
             sSession = loginSession;
         }
+
+        /**
+         * 获取cookie
+         * @param type 协议
+         * @param params 参数
+         * @return cookie
+         * @throws UnsupportedEncodingException
+         * @throws NoSuchAlgorithmException
+         */
         public static String getCookie(Type type,@Nullable String... params) throws UnsupportedEncodingException, NoSuchAlgorithmException {
             //Log.i("123","params="+params+"  params len="+params.length);
             String action = null;

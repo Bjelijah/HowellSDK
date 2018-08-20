@@ -19,8 +19,9 @@ import retrofit2.http.Query;
 
 /**
  * Created by Administrator on 2017/8/9.
+ * http接口
+ * @see 《皓维数据中心平台协议》
  */
-
 public interface HWHttpApi {
     @GET("howell/ver10/user_authentication/Authentication/Nonce")
     Observable<UserNonce> getUserNonce(@Query("UserName") String userName);

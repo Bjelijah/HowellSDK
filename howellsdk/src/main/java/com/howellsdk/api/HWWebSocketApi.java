@@ -6,6 +6,7 @@ import org.json.JSONException;
 
 /**
  * Created by Administrator on 2017/8/21.
+ * web socket api 接口
  */
 
 public interface HWWebSocketApi {

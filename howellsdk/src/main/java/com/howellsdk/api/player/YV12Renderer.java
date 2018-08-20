@@ -26,7 +26,8 @@ import javax.microedition.khronos.opengles.GL10;
  *  his is a GLSurfaceView's renderer, which render the YV12 image to the view.
  *  Use native code to render Y,U,V, rest thing is done by the class.<br/>
  * 	don't change it
- * 	@author howellt
+ * 	@author howell
+ * 	openGl renderer
  */
 public class YV12Renderer implements Renderer {
 

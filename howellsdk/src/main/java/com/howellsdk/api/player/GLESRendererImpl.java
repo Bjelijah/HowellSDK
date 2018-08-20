@@ -21,7 +21,7 @@ import java.nio.FloatBuffer;
  * GLESRendererImpl可以被GLSurfaceView的Renderer和GLESTextureView复用
  * 
  * @author flycatdeng
- * 
+ *
  */
 public class GLESRendererImpl implements IGLESRenderer {
     private static final String TAG = "123";

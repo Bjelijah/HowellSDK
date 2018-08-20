@@ -12,6 +12,8 @@ import java.util.ArrayList;
 
 /**
  * Created by Administrator on 2017/8/25.
+ * 播放接口
+ * ecam 5198ap 本地播放 流转
  */
 
 public interface HWPlayApi {

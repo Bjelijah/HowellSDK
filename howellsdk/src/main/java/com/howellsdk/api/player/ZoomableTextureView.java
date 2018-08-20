@@ -15,6 +15,10 @@ import com.howell.sdk.netsdk.R;
 
 
 //GLTextureView
+
+/**
+ * 可放大textureView
+ */
 public class ZoomableTextureView extends GLESTextureView {
 
     public interface OnTouchCb{
